@@ -2,6 +2,8 @@ package a8;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -79,8 +81,6 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 			s.clearSpot();
 			//s.removeSpotListener(l);
 		}
-		//_board = new TTTBoard(3, 3);
-	
 
 		/* Reset game won and next to play fields */
 		_game_won = false;
@@ -96,11 +96,7 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		/* Handles reset game button. Simply reset the game. */
 		resetGame();
 	}
-	
-	String player_name = null;
-	String next_player_name = null;
-	Color player_color = null;
-	boolean hasWinner = false;
+
 	
 	@Override
 	public void spotClicked(Spot s) {
@@ -114,6 +110,10 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		 * Set up player and next player name strings, and player color as local
 		 * variables to be used later.
 		 */
+		
+		String player_name = null;
+		String next_player_name = null;
+		Color player_color = null;
 
 
 		if (_next_to_play == Player.BLACK) {
@@ -133,21 +133,25 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		s.toggleSpot();
 		
 		
+		/*Check if spot is three in a row*/		
+		
 		if (_board.testcrossDownwards() || _board.testcrossUpwards() || _board.testTopRow() || _board.testMiddleRow() || _board.testBottomRow() ||
 				_board.testLeftColumn() || _board.testMiddleColumn() || _board.testRightColumn()) {
+			
 			_message.setText(player_name + " wins!");
+			_game_won = true;
+			_board.setEnabled(false);
 			
 		} else if (_board.isTicTacRunThru()) {
 			_message.setText("It's a DRAW!");
+			_game_won = true;
+			_board.setEnabled(false);
+
 		} else {
 		_message.setText("You clicked on " + s.getCoordString() +". " + next_player_name + " to play.");
 		}
-		/*Check if spot is three in a row*/		
+			}
 		
-		
-		
-	}
-
 	@Override
 	public void spotEntered(Spot s) {
 		/* Highlight spot if game still going on. */
@@ -164,53 +168,6 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 
 		s.unhighlightSpot();
 	}
-	
-	
-	
-	
-	public boolean hasWinner(Color player_color) {
-		//Top Row
-        if (_board.getSpotAt(0,0).getSpotColor().equals(player_color) && _board.getSpotAt(1,0).getSpotColor().equals(player_color) && _board.getSpotAt(2,0).getSpotColor().equals(player_color))  {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Middle Row
-        else if (_board.getSpotAt(0,1).getSpotColor().equals(player_color) && _board.getSpotAt(1,1).getSpotColor().equals(player_color) && _board.getSpotAt(2,1).getSpotColor().equals(player_color)) {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Bottom Row
-        else if (_board.getSpotAt(0,2).getSpotColor().equals(player_color) && _board.getSpotAt(1,2).getSpotColor().equals(player_color) && _board.getSpotAt(2,2).getSpotColor().equals(player_color)) {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-		//First Column
-        else if(_board.getSpotAt(0,0).getSpotColor().equals(player_color) && _board.getSpotAt(0,1).getSpotColor().equals(player_color) && _board.getSpotAt(0,2).getSpotColor().equals(player_color))  {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Second Column
-        else if (_board.getSpotAt(1,0).getSpotColor().equals(player_color) && _board.getSpotAt(1,1).getSpotColor().equals(player_color) && _board.getSpotAt(1,2).getSpotColor().equals(player_color)) {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Third Column
-        else if (_board.getSpotAt(2,0).getSpotColor().equals(player_color) && _board.getSpotAt(2,1).getSpotColor().equals(player_color) && _board.getSpotAt(2,2).getSpotColor().equals(player_color)) {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Cross Downwards
-        else if (_board.getSpotAt(0,0).getSpotColor().equals(player_color) && _board.getSpotAt(1,1).getSpotColor().equals(player_color) && _board.getSpotAt(2,2).getSpotColor().equals(player_color)) {
-           // JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        //Cross Upwards
-        else if (_board.getSpotAt(0,2).getSpotColor().equals(player_color) && _board.getSpotAt(1,1).getSpotColor().equals(player_color) && _board.getSpotAt(2,0).getSpotColor().equals(player_color)) {
-            //JOptionPane.showMessageDialog(null, "player " + player_name + " has won");
-            return true;
-        }
-        return false;
-    }
     
 
 
