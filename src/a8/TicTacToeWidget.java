@@ -77,7 +77,10 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 
 		for (Spot s : _board) {
 			s.clearSpot();
+			//s.removeSpotListener(l);
 		}
+		//_board = new TTTBoard(3, 3);
+	
 
 		/* Reset game won and next to play fields */
 		_game_won = false;
@@ -93,9 +96,6 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		/* Handles reset game button. Simply reset the game. */
 		resetGame();
 	}
-	
-	
-	
 	
 	String player_name = null;
 	String next_player_name = null;
@@ -133,21 +133,11 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		s.toggleSpot();
 		
 		
-		_message.setText("You clicked on " + s.getCoordString() +". " + next_player_name + " to play.");
+		_message.setText("You clicked on " + s.getCoordString() +". " + next_player_name + " to play." + "test1:" + (_board.testMiddleRow()==true));
 
 		/*Check if spot is three in a row*/		
 		
 		
-		if (_board.isTicTacFull()) {
-		
-		if (hasWinner(player_color)) {
-			_message.setText(player_name + " won!");
-			_game_won = true;
-		}
-		else { 
-			_message.setText("The game is a " + " draw!");
-		}
-	}
 		
 	}
 
