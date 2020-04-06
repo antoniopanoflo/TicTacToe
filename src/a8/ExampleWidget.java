@@ -12,10 +12,9 @@ import javax.swing.JPanel;
 
 public class ExampleWidget extends JPanel implements ActionListener, SpotListener {
 
-	/* Enum to identify player. */
-	
 	private enum Player {BLUE, GREEN};
-	
+	private static final long serialVersionUID = 1L;
+
 	private JSpotBoard _board;		/* SpotBoard playing area. */
 	private JLabel _message;		/* Label for messages. */
 	private boolean _game_won;		/* Indicates if games was been won already.*/
@@ -100,7 +99,7 @@ public class ExampleWidget extends JPanel implements ActionListener, SpotListene
 		
 		/* Display game start message. */
 		
-		_message.setText("Welcome to the Example. Blue to play");
+		_message.setText("Welcome to the Example. Blue to play.");
 	}
 
 	@Override

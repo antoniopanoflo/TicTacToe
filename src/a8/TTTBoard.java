@@ -100,58 +100,67 @@ public class TTTBoard extends JPanel implements SpotBoard {
 		return new SpotBoardIterator(this);
 	}
 	
-	public boolean isTicTacFull() {
+	public boolean isTicTacRunThru() {
 		for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-		if (_spots[i][j].isEmpty()) {
-		return false;
-		}
-		}
+			for (int j = 0; j < 3; j++) {
+				if (_spots[i][j].isEmpty()) {
+					return false;
+				}
+			}
 		}
 		return true;
-}
+	}
 	
 	
 	public boolean testcrossDownwards() {
 		return _spots[0][0].getSpotColor() == _spots[1][1].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[0][0].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[1][1].getSpotColor();
+				&& _spots[1][1].getSpotColor() == _spots[2][2].getSpotColor()
+						&& _spots[0][0].isEmpty() == false
+						&& _spots[1][1].isEmpty() == false && _spots[2][2].isEmpty() == false;
 	}
 	public boolean testcrossUpwards() {
 		return _spots[0][2].getSpotColor() == _spots[1][1].getSpotColor()
-				&& _spots[2][0].getSpotColor() == _spots[0][2].getSpotColor()
-				&& _spots[2][0].getSpotColor() == _spots[1][1].getSpotColor();//
+				&& _spots[1][1].getSpotColor() == _spots[2][0].getSpotColor()
+						&& _spots[0][2].isEmpty() == false
+						&& _spots[1][1].isEmpty() == false && _spots[2][0].isEmpty() == false;
 	}
 	public boolean testTopRow() {
 		return _spots[0][0].getSpotColor() == _spots[1][0].getSpotColor()
-				&& _spots[2][0].getSpotColor() == _spots[0][0].getSpotColor()
-				&& _spots[2][0].getSpotColor() == _spots[1][0].getSpotColor();//
+				&& _spots[1][0].getSpotColor() == _spots[2][0].getSpotColor()
+						&& _spots[0][0].isEmpty() == false
+						&& _spots[1][0].isEmpty() == false && _spots[1][0].isEmpty() == false;
 	}
 	public boolean testMiddleRow() {
 		return _spots[0][1].getSpotColor() == _spots[1][1].getSpotColor()
-				&& _spots[2][1].getSpotColor() == _spots[0][1].getSpotColor()
-				&& _spots[2][1].getSpotColor() == _spots[1][1].getSpotColor();//
+				&& _spots[1][1].getSpotColor() == _spots[2][1].getSpotColor()
+						&& _spots[0][1].isEmpty() == false
+						&& _spots[1][1].isEmpty() == false && _spots[2][1].isEmpty() == false;
 	}
 	public boolean testBottomRow() {
 		return _spots[0][2].getSpotColor() == _spots[1][2].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[0][2].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[1][2].getSpotColor();//
+				&& _spots[1][2].getSpotColor() == _spots[2][2].getSpotColor()
+						&& _spots[0][2].isEmpty() == false
+						&& _spots[1][2].isEmpty() == false && _spots[2][2].isEmpty() == false;
 	}
 	public boolean testLeftColumn() {
 		return _spots[0][0].getSpotColor() == _spots[0][1].getSpotColor()
-				&& _spots[0][2].getSpotColor() == _spots[0][0].getSpotColor()
-				&& _spots[0][2].getSpotColor() == _spots[0][1].getSpotColor();//
+				&& _spots[0][1].getSpotColor() == _spots[0][2].getSpotColor()
+						&& _spots[0][0].isEmpty() == false
+						&& _spots[0][1].isEmpty() == false && _spots[0][2].isEmpty() == false;
 	}
 	public boolean testMiddleColumn() {
 		return _spots[1][0].getSpotColor() == _spots[1][1].getSpotColor()
-				&& _spots[1][2].getSpotColor() == _spots[1][0].getSpotColor()
-				&& _spots[1][2].getSpotColor() == _spots[1][1].getSpotColor();//
+				&& _spots[1][1].getSpotColor() == _spots[1][2].getSpotColor()
+						&& _spots[1][0].isEmpty() == false
+						&& _spots[1][1].isEmpty() == false && _spots[1][2].isEmpty() == false;
 	}
 	public boolean testRightColumn() {
 		return _spots[2][0].getSpotColor() == _spots[2][1].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[2][0].getSpotColor()
-				&& _spots[2][2].getSpotColor() == _spots[2][1].getSpotColor();
+				&& _spots[2][1].getSpotColor() == _spots[2][2].getSpotColor()
+						&& _spots[2][0].isEmpty() == false
+						&& _spots[2][1].isEmpty() == false && _spots[2][2].isEmpty() == false;
 	}
+
 	
 	
 }

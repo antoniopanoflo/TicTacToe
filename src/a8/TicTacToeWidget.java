@@ -133,8 +133,15 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 		s.toggleSpot();
 		
 		
-		_message.setText("You clicked on " + s.getCoordString() +". " + next_player_name + " to play." + "test1:" + (_board.testMiddleRow()==true));
-
+		if (_board.testcrossDownwards() || _board.testcrossUpwards() || _board.testTopRow() || _board.testMiddleRow() || _board.testBottomRow() ||
+				_board.testLeftColumn() || _board.testMiddleColumn() || _board.testRightColumn()) {
+			_message.setText(player_name + " wins!");
+			
+		} else if (_board.isTicTacRunThru()) {
+			_message.setText("It's a DRAW!");
+		} else {
+		_message.setText("You clicked on " + s.getCoordString() +". " + next_player_name + " to play.");
+		}
 		/*Check if spot is three in a row*/		
 		
 		
@@ -205,14 +212,7 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
         return false;
     }
     
-    public boolean isDraw() { //This will later need to turn a boolean
-    	//which should check if all of the spots are full but also isn't hasWinner()
-    
- 
-    	
-    	return false;
-    }
-    
+
 
 
 }
