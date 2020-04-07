@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.JPanel;
 /*
  * JSpotBoard is a user interface component that implements SpotBoard.
@@ -128,7 +125,7 @@ public class TTTBoard extends JPanel implements SpotBoard {
 		return _spots[0][0].getSpotColor() == _spots[1][0].getSpotColor()
 				&& _spots[1][0].getSpotColor() == _spots[2][0].getSpotColor()
 						&& _spots[0][0].isEmpty() == false
-						&& _spots[1][0].isEmpty() == false && _spots[1][0].isEmpty() == false;
+						&& _spots[1][0].isEmpty() == false && _spots[2][0].isEmpty() == false;
 	}
 	public boolean testMiddleRow() {
 		return _spots[0][1].getSpotColor() == _spots[1][1].getSpotColor()
@@ -161,34 +158,4 @@ public class TTTBoard extends JPanel implements SpotBoard {
 						&& _spots[2][1].isEmpty() == false && _spots[2][2].isEmpty() == false;
 	}
 
-//	public void setPanelEnabled(JPanel panel, Boolean isEnabled) {
-//	    panel.setEnabled(isEnabled);
-//
-//	    Component[] components = panel.getComponents();
-//
-//	    for(int i = 0; i < components.length; i++) {
-//	        if(components[i].getClass().getName() == "javax.swing.JPanel") {
-//	            setPanelEnabled((JPanel) components[i], isEnabled);
-//	        }
-//
-//	        components[i].setEnabled(isEnabled);
-//	    }
-//	}
-	
-	
-	public void setEnabled(boolean en) {
-	    super.setEnabled(en);
-	    setComponentsEnabled(this, en);
-	}
-
-	private void setComponentsEnabled(java.awt.Container c, boolean en) {
-	    Component[] components = c.getComponents();
-	    for (Component comp: components) {
-	        if (comp instanceof java.awt.Container)
-	            setComponentsEnabled((java.awt.Container) comp, en);
-	        comp.setEnabled(en);
-	    }
-	}
-
-	
 }
