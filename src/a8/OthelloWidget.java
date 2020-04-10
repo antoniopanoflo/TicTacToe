@@ -14,16 +14,17 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 		private enum Player {WHITE, BLACK};
 		private static final long serialVersionUID = 1L;
 
-		private JSpotBoard _board;		/* SpotBoard playing area. */
+		private OthelloBoard _board;		/* SpotBoard playing area. */
 		private JLabel _message;		/* Label for messages. */
 		private boolean _game_won;		/* Indicates if games was been won already.*/
 		private Player _next_to_play;	/* Identifies who has next turn. */
+		private boolean _tie;
 		
 		public OthelloWidget() {
 			
 			/* Create SpotBoard and message label. */
 			
-			_board = new JSpotBoard(8,8);
+			_board = new OthelloBoard(8,8);
 			_message = new JLabel();
 			
 			/* Set layout and place SpotBoard at center. */
@@ -68,10 +69,22 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 			/* Clear all spots on board. Uses the fact that SpotBoard
 			 * implements Iterable<Spot> to do this in a for-each loop.
 			 */
-
-			for (Spot s : _board) {
+			
+			for (Spot s : _board)
+			{
 				s.clearSpot();
+				s.setSpotColor(Color.LIGHT_GRAY);
+				_game_won = false;
+				_tie = false;
+				_next_to_play = Player.BLACK;
+				_message.setText("Welcome to Othello. Black shall go first!");
+		
 			}
+			
+//
+//			for (Spot s : _board) {
+//				s.clearSpot();
+//			}
 
 			/* Reset the background of the old secret spot.
 			 * Check _secret_spot for null first because call to 
@@ -108,47 +121,52 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 		 * logic as responses to enter/exit/click on spots.
 		 */
 		
-		@Override
-		public void spotClicked(Spot s) {
-			
-			/* If game already won, do nothing. */
-			if (_game_won) {
-				return;
-			}
 
+		
+		
+		
+	@Override
+	public void spotClicked(Spot s) {
 
-			/* Set up player and next player name strings,
-			 * and player color as local variables to
-			 * be used later.
-			 */
-			
-			String player_name = null;
-			String next_player_name = null;
-			Color player_color = null;
-			
-			if (_next_to_play == Player.WHITE) {
-				player_color = Color.WHITE;
-				player_name = "White";
-				next_player_name = "Black";
-				_next_to_play = Player.BLACK;
-			} else {
-				player_color = Color.BLACK;
-				player_name = "Black";
-				next_player_name = "White";
-				_next_to_play = Player.WHITE;			
-			}
-					
-			
-			/* Set color of spot clicked and toggle. */
+		/* If game already won, do nothing. */
+		if (_game_won || _tie || !spothHighlight(s)
+				|| s.getSpotColor() == Color.BLACK || s.getSpotColor() == Color.WHITE) {
+			return;
+		}
+
+		String next_player_name = null;
+		Color player_color = null;
+
+		if (_next_to_play == Player.BLACK) {
+			player_color = Color.BLACK;
+			// next_player_name = "White";
+			// _next_to_play = Player.WHITE;
+		} else {
+			player_color = Color.WHITE;
+			// next_player_name = "Black";
+			// _next_to_play = Player.BLACK;
+		}
+
+		if (spothHighlight(s)) {
+			validSpot(s);
 			s.setSpotColor(player_color);
 			s.toggleSpot();
 
-			
+			if (player_color == Color.BLACK) {
+				next_player_name = "White";
+				_next_to_play = Player.WHITE;
+			} else {
+				next_player_name = "Black";
+				_next_to_play = Player.BLACK;
+			}
+			_message.setText(next_player_name + " to play.");
+		}
 
-			
-			
-			
-			
+		if (isOthelloRunThru()) {
+			checkFinally();
+		}
+			_message.setText(next_player_name + " to play.");
+
 		}
 
 		@Override
@@ -168,7 +186,169 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 			s.unhighlightSpot();
 		}
 		
+		
+		
+		
+		
+		
+		private void checkFinally() {
+			int i = 0; //black spots
+			int j = 0; //white spots
+			
+			for (Spot s : _board) {
+				if (s.getSpotColor() == Color.BLACK) {
+					i++;
+				}
+				
+				else if (s.getSpotColor() == Color.WHITE) {
+					j++;
+				}
+			}
+			
+			if (i > j) {
+				_message.setText("Black Wins! Score: " + i + " to " + j);
+			} else if (j > i) {
+				_message.setText("White Wins! Score: " + j + " to " + i);
+			} else {
+				_message.setText("The game is a DRAW");
+			}
+		}
+		
+		private boolean isOthelloRunThru() { //Review this.
+			int pieces = 0;
+			for (Spot n : _board) {
+				if (n.getSpotColor() == Color.BLACK || n.getSpotColor() == Color.WHITE) {
+					pieces++;
+				}
+				if (pieces == 64) {
+					return true;
+				} 
+			}
+			
+			return false;
+		}
+		
+	private boolean spothHighlight(Spot spot) { // Review the initiating as ints.
+		int coordX = spot.getSpotX();
+		int coordY = spot.getSpotY();
+		Color spotColor;
+		Color spotSearchColor;
+		if (_next_to_play == Player.BLACK) {
+			spotSearchColor = Color.WHITE;
+			spotColor = Color.BLACK;
+		} else {
+			spotSearchColor = Color.BLACK;
+			spotColor = Color.WHITE;
+		}
+
+		// Checking for horizontal
+
+		if (spot.getSpotColor() == Color.BLACK || spot.getSpotColor() == Color.WHITE) {
+			return false;
+		}
+
+		if ((coordX - 1 >= 0) && (_board.getSpotAt(coordX - 1, coordY).getSpotColor() == spotSearchColor)) {
+			for (int i = coordX - 1; i >= 0; i--) {
+				if (_board.getSpotAt(i, coordY).getSpotColor() == spotColor) {
+					return true;
+				}
+
+				else if (_board.getSpotAt(i, coordY).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
+
+		// test vertically
+
+		if ((coordY - 1 >= 0) && (_board.getSpotAt(coordX, coordY - 1).getSpotColor() == spotSearchColor)) {
+			for (int i = coordY - 1; i >= 0; i--) {
+				if (_board.getSpotAt(coordX, i).getSpotColor() == spotColor) {
+					return true;
+				} else if (_board.getSpotAt(coordX, i).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
+		else return false;
+
+		return false;
+	}
+		
+		
+		
+	private void validSpot(Spot spot) {
+		int coordX = spot.getSpotX();
+		int coordY = spot.getSpotY();
+		Color spotColor;
+		Color spotSearchColor;
+		if (_next_to_play == Player.BLACK) {
+			spotSearchColor = Color.WHITE;
+			spotColor = Color.BLACK;
+		} else {
+			spotSearchColor = Color.BLACK;
+			spotColor = Color.WHITE;
+		}
+
+		// test horizontally
+
+		if (spot.getSpotColor() == Color.BLACK || spot.getSpotColor() == Color.WHITE) {
+			return;
+		}
+
+		if ((coordX - 1 >= 0) && (_board.getSpotAt(coordX - 1, coordY).getSpotColor() == spotSearchColor)) {
+			for (int i = coordX - 1; i >= 0; i--) {
+				if (_board.getSpotAt(i, coordY).getSpotColor() == spotColor) {
+					for (int j = i; j < coordX; j++) {
+						_board.getSpotAt(j, coordY).setSpotColor(spotColor);
+					}
+					break;
+				}
+
+				else if (_board.getSpotAt(i, coordY).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
+		// vertica check
+
+		if ((coordY - 1 >= 0) && (_board.getSpotAt(coordX, coordY - 1).getSpotColor() == spotSearchColor)) {
+			for (int i = coordY - 1; i >= 0; i--) {
+				if (_board.getSpotAt(coordX, i).getSpotColor() == spotColor) {
+					for (int j = i; j < coordY; j++) {
+						_board.getSpotAt(coordX, j).setSpotColor(spotColor);
+					}
+					break;
+				}
+
+				else if (_board.getSpotAt(coordX, i).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+		
 	
+		if ((coordX - 1 >= 0) && (coordY + 1 <= 7)
+				&& _board.getSpotAt(coordX - 1, coordY + 1).getSpotColor() == spotSearchColor) {
+			for (int i = 1; i < 8; i++) {
+				if ((coordX - i >= 0) && (coordY + i <= 7)
+						&& (_board.getSpotAt(coordX - i, coordY + i).getSpotColor() == spotColor)) {
+					for (int j = i; j >= 0; j--) {
+						_board.getSpotAt(coordX - j, coordY + j).setSpotColor(spotColor);
+					}
+					break;
+				} else if ((coordX - i >= 0) && (coordY + i <= 7)
+						&& (_board.getSpotAt(coordX - i, coordY + i).getSpotColor() == Color.LIGHT_GRAY)) {
+					break;
+				}
+			}
+		}
+
+		return;
+	}
 	
 	
 }
