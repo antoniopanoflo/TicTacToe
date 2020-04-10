@@ -30,6 +30,10 @@ import javax.swing.BorderFactory;
 
 public class JSpot extends JPanel implements MouseListener, Spot {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Color _spot_color;
 	private Color _highlight_color;
 

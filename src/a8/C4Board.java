@@ -1,14 +1,32 @@
 package a8;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JPanel;
 
+/*
+ * JSpotBoard is a user interface component that implements SpotBoard.
+ * 
+ * Spot width and spot height are specified to the constructor. 
+ * 
+ * By default, the spots on the spot board are set up with a checker board pattern
+ * for background colors and yellow highlighting.
+ * 
+ * Uses SpotBoardIterator to implement Iterable<Spot>
+ * 
+ */
+
 public class C4Board extends JPanel implements SpotBoard {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_SCREEN_WIDTH = 500;
 	private static final int DEFAULT_SCREEN_HEIGHT = 500;
@@ -17,7 +35,7 @@ public class C4Board extends JPanel implements SpotBoard {
 	private static final Color DEFAULT_SPOT_COLOR = Color.BLACK;
 	private static final Color DEFAULT_HIGHLIGHT_COLOR = Color.YELLOW;
 
-	private static Spot[][] _spots;
+	private Spot[][] _spots;
 	
 	public C4Board(int width, int height) {
 		if (width < 1 || height < 1 || width > 500 || height > 500) {
@@ -26,19 +44,11 @@ public class C4Board extends JPanel implements SpotBoard {
 		setLayout(new GridLayout(height, width));
 		_spots = new Spot[width][height];
 		
-		Dimension preferred_size = new Dimension(DEFAULT_SCREEN_WIDTH/width, DEFAULT_SCREEN_HEIGHT/height);
-		
-		//Might have to redo this cuz I messed it up right here.copy paste this agian from JSpotBoard.
-		
+		Dimension preferred_size = new Dimension((DEFAULT_SCREEN_WIDTH/width)+5, DEFAULT_SCREEN_HEIGHT/height);
 		
 		for (int y=0; y<height; y++) {
 			for (int x=0; x<width; x++) {
-				if ((x%2) == 0) {
-				Color bg = DEFAULT_BACKGROUND_DARK;
-				} else { Color bg = DEFAULT_BACKGROUND_LIGHT; }
-				
-				
-				Color bg = null;
+				Color bg = (x%2 == 0) ? DEFAULT_BACKGROUND_LIGHT : DEFAULT_BACKGROUND_DARK;
 				_spots[x][y] = new JSpot(bg, DEFAULT_SPOT_COLOR, DEFAULT_HIGHLIGHT_COLOR, this, x, y);
 				((JSpot)_spots[x][y]).setPreferredSize(preferred_size);
 				add(((JSpot) _spots[x][y]));
@@ -48,17 +58,19 @@ public class C4Board extends JPanel implements SpotBoard {
 
 	// Getters for SpotWidth and SpotHeight properties
 	
-	
+	@Override
 	public int getSpotWidth() {
 		return _spots.length;
 	}
 	
+	@Override
 	public int getSpotHeight() {
 		return _spots[0].length;
 	}
 
 	// Lookup method for Spot at position (x,y)
 	
+	@Override
 	public Spot getSpotAt(int x, int y) {
 		if (x < 0 || x >= getSpotWidth() || y < 0 || y >= getSpotHeight()) {
 			throw new IllegalArgumentException("Illegal spot coordinates");
@@ -91,4 +103,120 @@ public class C4Board extends JPanel implements SpotBoard {
 	public Iterator<Spot> iterator() {
 		return new SpotBoardIterator(this);
 	}
+	
+	
+	public boolean isHorizontal() {
+		boolean temp1 = false;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 6; j++) {
+				if (_spots[i][j].getSpotColor() == _spots[i + 1][j].getSpotColor()
+						&& _spots[i + 1][j].getSpotColor() == _spots[i + 2][j].getSpotColor()
+						&& _spots[i + 2][j].getSpotColor() == _spots[i + 3][j].getSpotColor()
+						&& _spots[i + 0][j].isEmpty() == false && _spots[i + 1][j].isEmpty() == false
+						&& _spots[i + 2][j].isEmpty() == false && _spots[i + 3][j].isEmpty() == false) {
+					
+					_spots[i][j].highlightSpot();
+					_spots[i+1][j].highlightSpot();
+					_spots[i+2][j].highlightSpot();
+					_spots[i+3][j].highlightSpot();
+					
+//					for (int n = 0; n < 4; n++) {
+//						_spots[n + i][j].highlightSpot();
+//						}
+					
+					temp1 = true;
+					// System.out.println("i: " + i);
+				}
+
+			}
+		}
+		return temp1;
+	}
+	
+	public boolean isVertical() {
+		boolean temp2 = false;
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (_spots[i][0 + j].getSpotColor() == _spots[i][1 + j].getSpotColor()
+						&& _spots[i][1 + j].getSpotColor() == _spots[i][2 + j].getSpotColor()
+						&& _spots[i][2 + j].getSpotColor() == _spots[i][3 + j].getSpotColor()
+						&& _spots[i][0 + j].isEmpty() == false && _spots[i][1 + j].isEmpty() == false
+						&& _spots[i][2 + j].isEmpty() == false && _spots[i][3 + j].isEmpty() == false) {
+					
+					_spots[i][j].highlightSpot();
+					_spots[i][j+1].highlightSpot();
+					_spots[i][j+2].highlightSpot();
+					_spots[i][j+3].highlightSpot();
+					
+					temp2 = true;
+				}
+
+			}
+
+		}
+		return temp2;
+
+	}
+	
+	public boolean isDiagonalDownwards() {
+		boolean temp2 = false;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (_spots[i][j].getSpotColor() == _spots[i + 1][1 + j].getSpotColor()
+						&& _spots[i + 1][1 + j].getSpotColor() == _spots[i + 2][j + 2].getSpotColor()
+						&& _spots[i + 2][j + 2].getSpotColor() == _spots[i + 3][j + 3].getSpotColor()
+						&& _spots[i][j].isEmpty() == false && _spots[i + 1][1 + j].isEmpty() == false
+						&& _spots[i + 2][2 + j].isEmpty() == false && _spots[i + 3][3 + j].isEmpty() == false) {
+					
+					_spots[i+1][j+1].highlightSpot();
+					_spots[i+2][j+2].highlightSpot();
+					_spots[i+3][j+3].highlightSpot();
+					_spots[i][j].highlightSpot();
+					
+					
+					temp2 = true;
+				}
+			}
+		}
+
+		return temp2;}
+	
+	public boolean isDiagonalUpwards() {
+		boolean temp2 = false;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 3; j > 0; j--) {
+				if (_spots[i][j + 2].getSpotColor() == _spots[i + 1][1 + j].getSpotColor()
+						&& _spots[i + 1][1 + j].getSpotColor() == _spots[i + 2][j].getSpotColor()
+						&& _spots[i + 2][j].getSpotColor() == _spots[i + 3][j - 1].getSpotColor()
+						&& _spots[i][j + 2].isEmpty() == false && _spots[i + 1][j + 1].isEmpty() == false
+						&& _spots[2 + i][j].isEmpty() == false && _spots[3 + i][j - 1].isEmpty() == false) {
+					
+					_spots[i][j+2].highlightSpot();
+					_spots[i+1][j+1].highlightSpot();
+					_spots[i+2][j].highlightSpot();
+					_spots[i+3][j-1].highlightSpot();
+					
+					
+					temp2 = true;
+				}
+			}
+		}
+
+		return temp2;
+	}
+	
+	
+	public boolean isC4RunThru() {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 6; j++) {
+				if (_spots[i][j].isEmpty()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	
+	
 }

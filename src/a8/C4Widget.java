@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,7 +18,6 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 	private C4Board _board;		/* SpotBoard playing area. */
 	private JLabel _message;		/* Label for messages. */
 	private boolean _game_won;		/* Indicates if games was been won already.*/
-	private Spot _secret_spot;		/* Secret spot which wins the game. */
 	private Player _next_to_play;	/* Identifies who has next turn. */
 	
 	public C4Widget() {
@@ -35,7 +35,7 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 		/* Create subpanel for message area and reset button. */
 		
 		JPanel reset_message_panel = new JPanel();
-		reset_message_panel.setLayout(new BorderLayout());
+		reset_message_panel.setLayout(new BorderLayout());//
 
 		/* Reset button. Add ourselves as the action listener. */
 		
@@ -71,7 +71,9 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 		 */
 
 		for (Spot s : _board) {
+			s.unhighlightSpot();
 			s.clearSpot();
+			
 		}
 		
 		/* Reset game won and next to play fields */
@@ -80,7 +82,7 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 		
 		/* Display game start message. */
 		
-		_message.setText("Welcome to the Example. Blue to play.");
+		_message.setText("Welcome to Connect Four. Red to play.");
 	}
 
 	@Override
@@ -123,30 +125,41 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 			_next_to_play = Player.RED;			
 		}
 				
+	
 		
-		/* Set color of spot clicked and toggle. */
-		s.setSpotColor(player_color);
-		s.toggleSpot();
-
-		/* Check if spot clicked is secret spot.
-		 * If so, mark game as won and update background
-		 * of spot to show that it was the secret spot.
-		 */
-		
-		_game_won = (s == _secret_spot);
-		if (_game_won) {
-			s.setBackground(Color.RED);
+		for (int i = 5 ; i >= 0 ; i--) {
+		 if (_board.getSpotAt(s.getSpotX(), i).isEmpty()) {
+			 
+			// System.out.println(s.getSpotX() + " " + i);
+				_board.getSpotAt(s.getSpotX(), i).setSpotColor(player_color);
+				_board.getSpotAt(s.getSpotX(), i).toggleSpot();
+				_message.setText(next_player_name + " to play");
+				break;
+		 }
 		}
+		
+		
+		for (Spot x : _board) {
+			if (x.getSpotX() == s.getSpotX()) {
+				x.unhighlightSpot();
+				s.highlightSpot();
+			}
+		}
+		
+		
+		if (_board.isHorizontal() || _board.isVertical() || _board.isDiagonalUpwards()
+				|| _board.isDiagonalDownwards()) {
+			_message.setText(player_name + " wins!");
 
-		/* Update the message depending on what happened.
-		 * If spot is empty, then we must have just cleared the spot. Update message accordingly.
-		 * If spot is not empty and the game is won, we must have
-		 * just won. Calculate score and display as part of game won message.
-		 * If spot is not empty and the game is not won, update message to
-		 * report spot coordinates and indicate whose turn is next.
-		 */
+			_game_won = true;
+			_board.setEnabled(false);
+		}
 		
-		
+	 else if (_board.isC4RunThru()) {
+		_message.setText("It's a DRAW!");
+		_game_won = true;
+		_board.setEnabled(false);
+	 }
 	}
 
 	@Override
@@ -156,14 +169,40 @@ public class C4Widget extends JPanel implements ActionListener, SpotListener {
 		if (_game_won) {
 			return;
 		}
-		s.highlightSpot();
-	}
+		
+		int s_x = s.getSpotX();
+		 
+		for (Spot x : _board) {
+			if (x.getSpotX() == s_x && x.isEmpty()) {
+				x.highlightSpot();
+			}
+		}
+		
+		}
 
-	@Override
+	@Override  
 	public void spotExited(Spot s) {
 		/* Unhighlight spot. */
 		
-		s.unhighlightSpot();
+		if (_game_won) {
+			return;
+		}
+		
+		
+		
+		int s_x = s.getSpotX();
+		
+		for (Spot x : _board) {
+			if (x.getSpotX() == s_x) {
+				x.unhighlightSpot();
+			}
+		}
+	
+		
+		}
+	
+	
 	}
 	
-}
+	
+	

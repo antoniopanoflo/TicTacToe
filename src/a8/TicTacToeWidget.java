@@ -163,10 +163,10 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 	}
 
 	@Override
-	public void spotExited(Spot s) {
+	public void spotExited(Spot n) {
 		/* Unhighlight spot. */
 
-		s.unhighlightSpot();
+		n.unhighlightSpot();
 	}
     
 
