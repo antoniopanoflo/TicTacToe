@@ -129,7 +129,7 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 	public void spotClicked(Spot s) {
 
 		/* If game already won, do nothing. */
-		if (_game_won || _tie || !spothHighlight(s)
+		if (_game_won || _tie || !highlightSpot(s)
 				|| s.getSpotColor() == Color.BLACK || s.getSpotColor() == Color.WHITE) {
 			return;
 		}
@@ -147,7 +147,7 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 			// _next_to_play = Player.BLACK;
 		}
 
-		if (spothHighlight(s)) {
+		if (highlightSpot(s)) {
 			validSpot(s);
 			s.setSpotColor(player_color);
 			s.toggleSpot();
@@ -163,10 +163,25 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 		}
 
 		if (isOthelloRunThru()) {
-			checkFinally();
+			isWinner();
 		}
+
+		else if (noValidMoves() && !isOthelloRunThru()) {
+//			if (player_color == Color.BLACK) {
+//				// player_color = Color.WHITE
+//				next_player_name = "White";
+//				_next_to_play = Player.WHITE;
+//			} else {
+//				next_player_name = "Black";
+//				_next_to_play = Player.BLACK;
+			}
 			_message.setText(next_player_name + " to play.");
 
+			if (noValidMoves()) {
+				isWinner();
+			} else {
+				return;
+			}
 		}
 
 		@Override
@@ -191,7 +206,7 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 		
 		
 		
-		private void checkFinally() {
+		private void isWinner() {
 			int i = 0; //black spots
 			int j = 0; //white spots
 			
@@ -228,7 +243,23 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 			return false;
 		}
 		
-	private boolean spothHighlight(Spot spot) { // Review the initiating as ints.
+		private boolean noValidMoves() {
+			int i = 0; //# of available empty spots on the board.
+			int j = 0; //# of the spots that aren't highlightable.
+			for (Spot s : _board) {
+				if (s.getSpotColor() == Color.LIGHT_GRAY) {
+					i++;
+					if (!highlightSpot(s)) {  //find this.
+						j++;
+					}
+				}
+			}
+			
+			if (i == j) return true;
+			else return false;
+		}
+		
+	private boolean highlightSpot(Spot spot) { // Review the initiating as ints.
 		int coordX = spot.getSpotX();
 		int coordY = spot.getSpotY();
 		Color spotColor;
@@ -264,6 +295,16 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 
 		if ((coordY - 1 >= 0) && (_board.getSpotAt(coordX, coordY - 1).getSpotColor() == spotSearchColor)) {
 			for (int i = coordY - 1; i >= 0; i--) {
+				if (_board.getSpotAt(coordX, i).getSpotColor() == spotColor) {
+					return true;
+				} else if (_board.getSpotAt(coordX, i).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
+		else if ((coordY + 1 <= 7) && (_board.getSpotAt(coordX, coordY + 1).getSpotColor() == spotSearchColor)) {
+			for (int i = coordY + 1; i <= 7; i++) {
 				if (_board.getSpotAt(coordX, i).getSpotColor() == spotColor) {
 					return true;
 				} else if (_board.getSpotAt(coordX, i).getSpotColor() == Color.LIGHT_GRAY) {
@@ -313,6 +354,21 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 			}
 		}
 
+		else if ((coordX + 1 <= 7) && (_board.getSpotAt(coordX + 1, coordY).getSpotColor() == spotSearchColor)) {
+			for (int i = coordX + 1; i <= 7; i++) {
+				if (_board.getSpotAt(i, coordY).getSpotColor() == spotColor) {
+					for (int j = i; j > coordX; j--) {
+						_board.getSpotAt(j, coordY).setSpotColor(spotColor);
+					}
+					break;
+				}
+
+				else if (_board.getSpotAt(i, coordY).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
 		// vertica check
 
 		if ((coordY - 1 >= 0) && (_board.getSpotAt(coordX, coordY - 1).getSpotColor() == spotSearchColor)) {
@@ -329,6 +385,23 @@ public class OthelloWidget  extends JPanel implements ActionListener, SpotListen
 				}
 			}
 		}
+
+		else if ((coordY + 1 <= 7) && (_board.getSpotAt(coordX, coordY + 1).getSpotColor() == spotSearchColor)) {
+			for (int i = coordY + 1; i <= 7; i++) {
+				if (_board.getSpotAt(coordX, i).getSpotColor() == spotColor) {
+					for (int j = i; j > coordY; j--) {
+						_board.getSpotAt(coordX, j).setSpotColor(spotColor);
+					}
+					break;
+				}
+
+				else if (_board.getSpotAt(coordX, i).getSpotColor() == Color.LIGHT_GRAY) {
+					break;
+				}
+			}
+		}
+
+
 		
 	
 		if ((coordX - 1 >= 0) && (coordY + 1 <= 7)
