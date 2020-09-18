@@ -1,28 +1,13 @@
-package a8;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Iterator;
 import javax.swing.JPanel;
-/*
- * JSpotBoard is a user interface component that implements SpotBoard.
- * 
- * Spot width and spot height are specified to the constructor. 
- * 
- * By default, the spots on the spot board are set up with a checker board pattern
- * for background colors and yellow highlighting.
- * 
- * Uses SpotBoardIterator to implement Iterable<Spot>
- * 
- */
 
 public class TTTBoard extends JPanel implements SpotBoard {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_SCREEN_WIDTH = 500;
 	private static final int DEFAULT_SCREEN_HEIGHT = 500;
