@@ -1,22 +1,14 @@
-package a8;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class TicTacToeWidget extends JPanel implements ActionListener, SpotListener {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private enum Player {BLACK, WHITE}
@@ -168,8 +160,5 @@ public class TicTacToeWidget extends JPanel implements ActionListener, SpotListe
 
 		n.unhighlightSpot();
 	}
-    
-
-
 
 }
