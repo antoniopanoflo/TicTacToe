@@ -1,10 +1,6 @@
-package a8;
-
 
 import java.awt.BasicStroke;
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -13,20 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.BorderFactory;
-
-/*
- * JSpot
- * 
- * A custom user interface component that implements a spot on a spot board
- * as an extension of JPanel.
- * 
- * A JSpot acts as its own mouse listener and will translate mouse events into
- * notifications to registered SpotListener objects when the spot is entered,
- * exited, or clicked using the appropriate methods (see SpotListener).
- *
- */
 
 public class JSpot extends JPanel implements MouseListener, Spot {
 
