@@ -1,6 +1,3 @@
-package a8;
-
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -35,5 +32,4 @@ public class SpotBoardIterator implements Iterator<Spot> {
 		}
 		return s;
 	}
-
 }
