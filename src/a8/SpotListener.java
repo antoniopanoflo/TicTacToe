@@ -1,5 +1,3 @@
-package a8;
-
 
 /*
  * SpotListener
